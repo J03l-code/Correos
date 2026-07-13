@@ -112,9 +112,13 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 // ==========================================
 Route::get('/install-helper', function () {
     try {
-        // Limpiar la caché de configuración vieja en el servidor
-        \Illuminate\Support\Facades\Artisan::call('config:clear');
-        \Illuminate\Support\Facades\Artisan::call('cache:clear');
+        // Limpiar la caché de configuración vieja en el servidor (capturando errores si las tablas no existen)
+        try {
+            \Illuminate\Support\Facades\Artisan::call('config:clear');
+            \Illuminate\Support\Facades\Artisan::call('cache:clear');
+        } catch (\Exception $e) {
+            // Ignorar si falla por no tener la tabla cache aún
+        }
         
         \Illuminate\Support\Facades\Artisan::call('key:generate');
         \Illuminate\Support\Facades\Artisan::call('migrate --force');
