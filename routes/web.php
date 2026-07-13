@@ -112,18 +112,19 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 // ==========================================
 Route::get('/install-helper', function () {
     try {
-        // Limpiar la caché de configuración vieja en el servidor (capturando errores si las tablas no existen)
-        try {
-            \Illuminate\Support\Facades\Artisan::call('config:clear');
-            \Illuminate\Support\Facades\Artisan::call('cache:clear');
-        } catch (\Exception $e) {
-            // Ignorar si falla por no tener la tabla cache aún
+        // 1. Correr las migraciones de base de datos
+        \Illuminate\Support\Facades\Artisan::call('migrate --force');
+        
+        // 2. Correr los seeders para crear el administrador y datos de prueba
+        \Illuminate\Support\Facades\Artisan::call('db:seed --force');
+        
+        // 3. Crear el enlace simbólico del storage usando la función nativa de PHP (evitando exec())
+        $target = storage_path('app/public');
+        $shortcut = public_path('storage');
+        if (!file_exists($shortcut)) {
+            symlink($target, $shortcut);
         }
         
-        \Illuminate\Support\Facades\Artisan::call('key:generate');
-        \Illuminate\Support\Facades\Artisan::call('migrate --force');
-        \Illuminate\Support\Facades\Artisan::call('db:seed --force');
-        \Illuminate\Support\Facades\Artisan::call('storage:link');
         return '¡Éxito! Base de datos migrada, usuario administrador creado y almacenamiento enlazado.';
     } catch (\Exception $e) {
         return 'Error durante la instalación: ' . $e->getMessage();
