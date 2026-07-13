@@ -106,3 +106,19 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::post('/estadisticas/vaciar', [AdminController::class, 'clearStats'])->name('admin.clear_stats');
     });
 });
+
+// ==========================================
+// ASISTENTE TEMPORAL DE INSTALACIÓN
+// ==========================================
+Route::get('/install-helper', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('key:generate');
+        \Illuminate\Support\Facades\Artisan::call('migrate --force');
+        \Illuminate\Support\Facades\Artisan::call('db:seed --force');
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        return '¡Éxito! Base de datos migrada, usuario administrador creado y almacenamiento enlazado.';
+    } catch (\Exception $e) {
+        return 'Error durante la instalación: ' . $e->getMessage();
+    }
+});
+
