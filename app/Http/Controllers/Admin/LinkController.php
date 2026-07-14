@@ -15,23 +15,26 @@ class LinkController extends Controller
     {
         $query = Link::with('section')->orderBy('section_id')->orderBy('sort_order');
 
-        if ($request->has('section_id') && $request->section_id) {
-            $query->where('section_id', $request->section_id);
-        }
+        $query->when($request->filled('section_id'), function ($q) use ($request) {
+            return $q->where('section_id', $request->section_id);
+        });
 
-        if ($request->has('link_type') && $request->link_type) {
-            $query->where('link_type', $request->link_type);
-        }
+        $query->when($request->filled('link_type'), function ($q) use ($request) {
+            return $q->where('link_type', $request->link_type);
+        });
 
-        if ($request->has('is_active') && $request->is_active !== '') {
-            $query->where('is_active', $request->boolean('is_active'));
-        }
+        $query->when($request->filled('is_active'), function ($q) use ($request) {
+            return $q->where('is_active', $request->boolean('is_active'));
+        });
 
         $links = $query->paginate(20);
         $sections = Section::orderBy('sort_order')->get();
         $settings = $this->getSettings();
 
-        return view('admin.links.index', compact('links', 'sections', 'settings'));
+        return response()
+            ->view('admin.links.index', compact('links', 'sections', 'settings'))
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private')
+            ->header('Pragma', 'no-cache');
     }
 
     public function create()
