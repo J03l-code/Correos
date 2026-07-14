@@ -107,27 +107,5 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     });
 });
 
-// ==========================================
-// ASISTENTE TEMPORAL DE INSTALACIÓN
-// ==========================================
-Route::get('/install-helper', function () {
-    try {
-        // 1. Correr las migraciones de base de datos
-        \Illuminate\Support\Facades\Artisan::call('migrate --force');
-        
-        // 2. Correr los seeders para crear el administrador y datos de prueba
-        \Illuminate\Support\Facades\Artisan::call('db:seed --force');
-        
-        // 3. Crear el enlace simbólico del storage solo si la función está permitida en el hosting
-        $target = storage_path('app/public');
-        $shortcut = public_path('storage');
-        if (function_exists('symlink') && !file_exists($shortcut)) {
-            symlink($target, $shortcut);
-        }
-        
-        return '¡Éxito! Base de datos migrada, usuario administrador creado y almacenamiento enlazado.';
-    } catch (\Exception $e) {
-        return 'Error durante la instalación: ' . $e->getMessage();
-    }
-});
+
 
