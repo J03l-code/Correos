@@ -22,30 +22,6 @@
     </section>
 
     <!-- ANNOUNCEMENTS SECTION -->
-    @if(isset($announcements) && $announcements->count() > 0)
-        <section class="py-4 bg-amber-50/50 border-b border-amber-100">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6">
-                <div class="space-y-3">
-                    @foreach($announcements as $announcement)
-                        <x-alert type="{{ $announcement->type }}" dismissible="true">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                                <div>
-                                    <h4 class="font-extrabold text-[var(--primary-dark)] font-montserrat">{{ $announcement->title }}</h4>
-                                    <p class="mt-0.5 leading-relaxed font-semibold">{{ $announcement->content }}</p>
-                                </div>
-                                @if($announcement->button_url && $announcement->button_text)
-                                    <x-button variant="primary" href="{{ $announcement->button_url }}" target="_blank" class="text-[10px] py-1 px-3 min-h-[34px] self-start sm:self-center">
-                                        {{ $announcement->button_text }}
-                                        <i data-lucide="external-link" class="h-3 w-3 ml-1"></i>
-                                    </x-button>
-                                @endif
-                            </div>
-                        </x-alert>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-    @endif
 
     <!-- ACCESS SECTIONS & LINK CARDS (Simplified for shifts and contacts) -->
     <section id="accesos" class="py-12">
