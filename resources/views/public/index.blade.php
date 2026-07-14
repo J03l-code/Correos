@@ -6,7 +6,10 @@
 
     <!-- SIMPLE HERO SECTION -->
     <section class="relative overflow-hidden py-12 bg-gradient-to-b from-white to-[#F5F1E7]/30 border-b border-gray-100 text-center">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 flex flex-col items-center">
+            <!-- Big official logo centered -->
+            <img src="/logo.png" alt="Logo Quito 2026" class="h-28 sm:h-36 w-auto object-contain mb-2 drop-shadow-sm">
+
             <div class="inline-flex items-center space-x-2 bg-[var(--secondary)]/15 text-[var(--primary)] px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest font-montserrat">
                 <span>QUITO 2026</span>
             </div>
