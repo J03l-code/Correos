@@ -119,7 +119,7 @@
                                                     >
                                                         <span class="font-extrabold text-sm text-[var(--primary)] flex items-center font-montserrat">
                                                             <i data-lucide="map-pin" class="h-4 w-4 mr-2 text-[var(--secondary)]"></i>
-                                                            Área / {{ $actualZoneName }}
+                                                            {{ $actualZoneName }}
                                                         </span>
                                                         <i data-lucide="chevron-down" class="h-4 w-4 text-gray-400 transition-transform duration-300" :class="activeZone === '{{ $zoneName }}' ? 'rotate-180 text-[var(--primary)]' : ''"></i>
                                                     </button>
