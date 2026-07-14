@@ -107,5 +107,18 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     });
 });
 
+// ==========================================
+// ASISTENTE TEMPORAL DE INSTALACIÓN
+// ==========================================
+Route::get('/install-helper', function () {
+    try {
+        // Correr las nuevas migraciones para añadir contact_name y contact_phone
+        \Illuminate\Support\Facades\Artisan::call('migrate --force');
+        return '¡Éxito! Base de datos actualizada con los nuevos campos de contacto.';
+    } catch (\Exception $e) {
+        return 'Error durante la instalación: ' . $e->getMessage();
+    }
+});
+
 
 
