@@ -118,10 +118,10 @@ Route::get('/install-helper', function () {
         // 2. Correr los seeders para crear el administrador y datos de prueba
         \Illuminate\Support\Facades\Artisan::call('db:seed --force');
         
-        // 3. Crear el enlace simbólico del storage usando la función nativa de PHP (evitando exec())
+        // 3. Crear el enlace simbólico del storage solo si la función está permitida en el hosting
         $target = storage_path('app/public');
         $shortcut = public_path('storage');
-        if (!file_exists($shortcut)) {
+        if (function_exists('symlink') && !file_exists($shortcut)) {
             symlink($target, $shortcut);
         }
         
