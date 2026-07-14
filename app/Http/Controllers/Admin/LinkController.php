@@ -60,6 +60,7 @@ class LinkController extends Controller
             'alternative_url' => 'nullable|string',
             'contact_name' => 'nullable|string|max:150',
             'contact_phone' => 'nullable|string|max:100',
+            'day' => 'nullable|string|max:50',
             'open_new_tab' => 'boolean',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
@@ -95,6 +96,7 @@ class LinkController extends Controller
             'alternative_url' => $request->alternative_url,
             'contact_name' => $request->contact_name,
             'contact_phone' => $request->contact_phone,
+            'day' => $request->day ?: 'General',
             'open_new_tab' => $request->has('open_new_tab'),
             'is_featured' => $request->has('is_featured'),
             'is_active' => $request->has('is_active'),
@@ -141,6 +143,7 @@ class LinkController extends Controller
             'alternative_url' => 'nullable|string',
             'contact_name' => 'nullable|string|max:150',
             'contact_phone' => 'nullable|string|max:100',
+            'day' => 'nullable|string|max:50',
             'open_new_tab' => 'boolean',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
@@ -166,6 +169,7 @@ class LinkController extends Controller
         $link->alternative_url = $request->alternative_url;
         $link->contact_name = $request->contact_name;
         $link->contact_phone = $request->contact_phone;
+        $link->day = $request->day ?: 'General';
         $link->open_new_tab = $request->has('open_new_tab');
         $link->is_featured = $request->has('is_featured');
         $link->is_active = $request->has('is_active');

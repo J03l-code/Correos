@@ -23,7 +23,7 @@
             @csrf
             @method('PUT')
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <!-- Section ID -->
                 <x-select label="Sección Perteneciente" name="section_id" required="true" help="La sección donde aparecerá el enlace.">
                     @foreach($sections as $sec)
@@ -42,6 +42,18 @@
                     <option value="phone" {{ $link->link_type === 'phone' ? 'selected' : '' }}>Llamada Telefónica (tel:)</option>
                     <option value="video" {{ $link->link_type === 'video' ? 'selected' : '' }}>Video (YouTube, Vimeo, etc.)</option>
                     <option value="website" {{ $link->link_type === 'website' ? 'selected' : '' }}>Página Web Externa</option>
+                </x-select>
+
+                <!-- Day of week -->
+                <x-select label="Día del Turno" name="day" required="true" help="Día en el que se realiza este turno.">
+                    <option value="Lunes" {{ $link->day === 'Lunes' ? 'selected' : '' }}>Lunes</option>
+                    <option value="Martes" {{ $link->day === 'Martes' ? 'selected' : '' }}>Martes</option>
+                    <option value="Miércoles" {{ $link->day === 'Miércoles' ? 'selected' : '' }}>Miércoles</option>
+                    <option value="Jueves" {{ $link->day === 'Jueves' ? 'selected' : '' }}>Jueves</option>
+                    <option value="Viernes" {{ $link->day === 'Viernes' ? 'selected' : '' }}>Viernes</option>
+                    <option value="Sábado" {{ $link->day === 'Sábado' ? 'selected' : '' }}>Sábado</option>
+                    <option value="Domingo" {{ $link->day === 'Domingo' ? 'selected' : '' }}>Domingo</option>
+                    <option value="General" {{ $link->day === 'General' ? 'selected' : '' }}>General / Todos los días</option>
                 </x-select>
             </div>
 

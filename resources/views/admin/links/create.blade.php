@@ -22,7 +22,7 @@
         <form action="{{ route('links.store') }}" method="POST" class="space-y-6">
             @csrf
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <!-- Section ID -->
                 <x-select label="Sección Perteneciente" name="section_id" required="true" help="La sección donde aparecerá el enlace.">
                     @foreach($sections as $sec)
@@ -32,7 +32,7 @@
 
                 <!-- Link Type -->
                 <x-select label="Tipo de Enlace" name="link_type" required="true" help="Define el ícono automático de la tarjeta.">
-                    <option value="whatsapp">Grupo o Canal de WhatsApp</option>
+                    <option value="whatsapp" selected>Grupo o Canal de WhatsApp</option>
                     <option value="form">Formulario (Google Forms, Typeform, etc.)</option>
                     <option value="doc">Documento / Carpeta (Drive, PDF, etc.)</option>
                     <option value="map">Mapa / Ubicación (Google Maps)</option>
@@ -41,6 +41,18 @@
                     <option value="phone">Llamada Telefónica (tel:)</option>
                     <option value="video">Video (YouTube, Vimeo, etc.)</option>
                     <option value="website">Página Web Externa</option>
+                </x-select>
+
+                <!-- Day of week -->
+                <x-select label="Día del Turno" name="day" required="true" help="Día en el que se realiza este turno.">
+                    <option value="Lunes">Lunes</option>
+                    <option value="Martes">Martes</option>
+                    <option value="Miércoles">Miércoles</option>
+                    <option value="Jueves">Jueves</option>
+                    <option value="Viernes">Viernes</option>
+                    <option value="Sábado">Sábado</option>
+                    <option value="Domingo">Domingo</option>
+                    <option value="General">General / Todos los días</option>
                 </x-select>
             </div>
 
