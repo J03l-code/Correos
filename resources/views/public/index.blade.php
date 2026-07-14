@@ -58,9 +58,11 @@
                 <div class="space-y-6" x-data="{ activeSection: null }">
                     @foreach($sections as $section)
                         @php
-                            $groupedLinks = $section->links->groupBy('day');
+                            $groupedByZone = $section->links->groupBy(function($link) {
+                                return trim($link->zone) ?: '';
+                            });
+                            $hasZones = $groupedByZone->keys()->contains(fn($key) => $key !== '');
                             $dayOrder = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo', 'General'];
-                            $sortedDays = $groupedLinks->keys()->sortBy(fn($day) => array_search($day, $dayOrder) !== false ? array_search($day, $dayOrder) : 99);
                         @endphp
                         
                         <div class="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm transition-all duration-300">
@@ -73,8 +75,8 @@
                             >
                                 <div class="flex items-center space-x-4">
                                     @if($section->icon)
-                                        <div class="p-3 bg-[var(--secondary)]/15 text-[var(--primary)] rounded-2xl">
-                                            <i data-lucide="{{ $section->icon }}" class="h-6 w-6"></i>
+                                        <div class="p-2.5 bg-[var(--secondary)]/15 text-[var(--primary)] rounded-xl">
+                                            <i data-lucide="{{ $section->icon }}" class="h-5 w-5"></i>
                                         </div>
                                     @endif
                                     <div>
@@ -89,9 +91,9 @@
                                 <i data-lucide="chevron-down" class="h-5 w-5 text-gray-400 transition-transform duration-300" :class="activeSection === {{ $section->id }} ? 'rotate-180 text-[var(--primary)]' : ''"></i>
                             </button>
 
-                            <!-- Level 2: Days inside the Section -->
+                            <!-- Content inside the Section -->
                             <div x-show="activeSection === {{ $section->id }}" x-collapse style="display: none;">
-                                <div class="p-6 sm:p-8 border-t border-gray-100 bg-gray-50/15 space-y-4" x-data="{ activeDay: null }">
+                                <div class="p-6 sm:p-8 border-t border-gray-100 bg-gray-50/15 space-y-4">
                                     
                                     @if($section->description)
                                         <p class="text-xs text-gray-500 font-semibold leading-relaxed mb-4">
@@ -99,96 +101,104 @@
                                         </p>
                                     @endif
 
-                                    @forelse($sortedDays as $dayName)
-                                        @php $linksForDay = $groupedLinks->get($dayName); @endphp
-                                        
-                                        <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm transition-all duration-300">
-                                            
-                                            <!-- Click to toggle Day -->
-                                            <button 
-                                                type="button" 
-                                                @click="activeDay = (activeDay === '{{ $dayName }}' ? null : '{{ $dayName }}')"
-                                                class="w-full flex items-center justify-between p-4 sm:p-5 bg-white hover:bg-gray-50/30 transition-colors focus:outline-none text-left"
-                                            >
-                                                <span class="font-extrabold text-sm text-gray-700 flex items-center font-montserrat">
-                                                    <i data-lucide="calendar" class="h-4 w-4 mr-2 text-[var(--coral)]"></i>
-                                                    Día: {{ $dayName }}
-                                                </span>
-                                                <i data-lucide="chevron-down" class="h-4 w-4 text-gray-400 transition-transform duration-300" :class="activeDay === '{{ $dayName }}' ? 'rotate-180 text-[var(--primary)]' : ''"></i>
-                                            </button>
+                                    @if($hasZones)
+                                        <!-- WITH ZONES: Level 2 Accordions for Zones -->
+                                        <div class="space-y-4" x-data="{ activeZone: null }">
+                                            @foreach($groupedByZone as $zoneName => $linksInZone)
+                                                @php
+                                                    $actualZoneName = $zoneName ?: 'General / Sin Zona';
+                                                    $groupedByDay = $linksInZone->groupBy('day');
+                                                    $sortedDays = $groupedByDay->keys()->sortBy(fn($day) => array_search($day, $dayOrder) !== false ? array_search($day, $dayOrder) : 99);
+                                                @endphp
+                                                <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm transition-all duration-300">
+                                                    <!-- Click to toggle Zone -->
+                                                    <button 
+                                                        type="button" 
+                                                        @click="activeZone = (activeZone === '{{ $zoneName }}' ? null : '{{ $zoneName }}')"
+                                                        class="w-full flex items-center justify-between p-4 sm:p-5 bg-white hover:bg-gray-50/30 transition-colors focus:outline-none text-left"
+                                                    >
+                                                        <span class="font-extrabold text-sm text-[var(--primary)] flex items-center font-montserrat">
+                                                            <i data-lucide="map-pin" class="h-4 w-4 mr-2 text-[var(--secondary)]"></i>
+                                                            Área / {{ $actualZoneName }}
+                                                        </span>
+                                                        <i data-lucide="chevron-down" class="h-4 w-4 text-gray-400 transition-transform duration-300" :class="activeZone === '{{ $zoneName }}' ? 'rotate-180 text-[var(--primary)]' : ''"></i>
+                                                    </button>
 
-                                            <!-- Level 3: Shifts inside the Day -->
-                                            <div x-show="activeDay === '{{ $dayName }}'" x-collapse style="display: none;">
-                                                <div class="p-4 sm:p-5 border-t border-gray-100 bg-gray-50/5 divide-y divide-gray-100">
-                                                    @foreach($linksForDay as $link)
-                                                        @php
-                                                            $status = $link->getAvailabilityStatus();
-                                                            $isAvailable = $link->isAvailable();
-                                                        @endphp
-                                                        <div class="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                                            
-                                                            <!-- Shift Details -->
-                                                            <div class="space-y-1 sm:max-w-md">
-                                                                <div class="flex items-center space-x-2">
-                                                                    <span class="font-bold text-[var(--primary-dark)] text-sm">{{ $link->title }}</span>
-                                                                    @if($link->is_featured)
-                                                                        <span class="bg-[var(--coral)]/10 text-[var(--coral)] text-[8px] font-black uppercase px-2 py-0.5 rounded">Destacado</span>
-                                                                    @endif
-                                                                </div>
-                                                                @if($link->description)
-                                                                    <p class="text-xs text-gray-400 font-semibold leading-relaxed">{{ $link->description }}</p>
-                                                                @endif
-
-                                                                <!-- Contact info -->
-                                                                @if($link->contact_name || $link->contact_phone)
-                                                                    <div class="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-gray-500 font-bold pt-1">
-                                                                        @if($link->contact_name)
-                                                                            <span class="flex items-center">
-                                                                                <i data-lucide="user" class="h-3 w-3 mr-1 text-gray-400"></i>
-                                                                                Encargado: <strong class="text-gray-700 ml-1">{{ $link->contact_name }}</strong>
-                                                                            </span>
-                                                                        @endif
-                                                                        @if($link->contact_phone)
-                                                                            <span class="flex items-center">
-                                                                                <i data-lucide="phone" class="h-3 w-3 mr-1 text-gray-400"></i>
-                                                                                Contacto: <span class="text-gray-700 ml-1 font-mono">{{ $link->contact_phone }}</span>
-                                                                            </span>
-                                                                        @endif
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-
-                                                            <!-- Join button -->
-                                                            <div class="self-start sm:self-center min-w-[140px] text-right">
-                                                                @if($isAvailable)
-                                                                    <x-button 
-                                                                        variant="{{ $link->is_featured ? 'secondary' : 'primary' }}" 
-                                                                        href="{{ route('public.access', $link->slug) }}" 
-                                                                        target="{{ $link->open_new_tab ? '_blank' : '_self' }}"
-                                                                        class="text-xs w-full py-2 min-h-[38px] justify-center"
+                                                    <!-- Level 3: Days inside the Zone -->
+                                                    <div x-show="activeZone === '{{ $zoneName }}'" x-collapse style="display: none;">
+                                                        <div class="p-4 sm:p-5 border-t border-gray-100 bg-gray-50/10 space-y-3" x-data="{ activeDay: null }">
+                                                            @foreach($sortedDays as $dayName)
+                                                                @php $linksForDay = $groupedByDay->get($dayName); @endphp
+                                                                <div class="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
+                                                                    <!-- Click to toggle Day -->
+                                                                    <button 
+                                                                        type="button" 
+                                                                        @click="activeDay = (activeDay === '{{ $dayName }}' ? null : '{{ $dayName }}')"
+                                                                        class="w-full flex items-center justify-between p-3.5 bg-white hover:bg-gray-50/30 transition-colors focus:outline-none text-left"
                                                                     >
-                                                                        <i data-lucide="message-circle" class="h-4 w-4 mr-1.5"></i>
-                                                                        {{ $link->button_text ?: 'Unirse al Grupo' }}
-                                                                    </x-button>
-                                                                @else
-                                                                    <span class="inline-block w-full text-center py-2 px-3 bg-gray-100 text-gray-400 font-bold text-xs rounded-xl border border-gray-200 cursor-not-allowed">
-                                                                        {{ $link->status_label ?: 'Cupo Completo' }}
-                                                                    </span>
-                                                                @endif
-                                                            </div>
+                                                                        <span class="font-bold text-xs text-gray-700 flex items-center">
+                                                                            <i data-lucide="calendar" class="h-3.5 w-3.5 mr-2 text-[var(--coral)]"></i>
+                                                                            Día: {{ $dayName }}
+                                                                        </span>
+                                                                        <i data-lucide="chevron-down" class="h-3.5 w-3.5 text-gray-400 transition-transform duration-300" :class="activeDay === '{{ $dayName }}' ? 'rotate-180 text-[var(--primary)]' : ''"></i>
+                                                                    </button>
 
+                                                                    <!-- Level 4: Horarios inside Day -->
+                                                                    <div x-show="activeDay === '{{ $dayName }}'" x-collapse style="display: none;">
+                                                                        <div class="p-4 border-t border-gray-100 bg-gray-50/5 divide-y divide-gray-100">
+                                                                            @foreach($linksForDay as $link)
+                                                                                @include('public.partials.shift-row', ['link' => $link])
+                                                                            @endforeach
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
                                                         </div>
-                                                    @endforeach
+                                                    </div>
                                                 </div>
-                                            </div>
-
+                                            @endforeach
                                         </div>
-                                    @empty
-                                        <p class="text-xs text-gray-400 font-semibold italic p-4 text-center">No hay turnos ni días programados en esta sección.</p>
-                                    @endforelse
+                                    @else
+                                        <!-- NO ZONES: Direct Level 2 Accordions for Days -->
+                                        <div class="space-y-4" x-data="{ activeDay: null }">
+                                            @php
+                                                $groupedByDay = $section->links->groupBy('day');
+                                                $sortedDays = $groupedByDay->keys()->sortBy(fn($day) => array_search($day, $dayOrder) !== false ? array_search($day, $dayOrder) : 99);
+                                            @endphp
+                                            @forelse($sortedDays as $dayName)
+                                                @php $linksForDay = $groupedByDay->get($dayName); @endphp
+                                                <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm transition-all duration-300">
+                                                    <!-- Click to toggle Day -->
+                                                    <button 
+                                                        type="button" 
+                                                        @click="activeDay = (activeDay === '{{ $dayName }}' ? null : '{{ $dayName }}')"
+                                                        class="w-full flex items-center justify-between p-4 sm:p-5 bg-white hover:bg-gray-50/30 transition-colors focus:outline-none text-left"
+                                                    >
+                                                        <span class="font-extrabold text-sm text-gray-700 flex items-center font-montserrat">
+                                                            <i data-lucide="calendar" class="h-4 w-4 mr-2 text-[var(--coral)]"></i>
+                                                            Día: {{ $dayName }}
+                                                        </span>
+                                                        <i data-lucide="chevron-down" class="h-4 w-4 text-gray-400 transition-transform duration-300" :class="activeDay === '{{ $dayName }}' ? 'rotate-180 text-[var(--primary)]' : ''"></i>
+                                                    </button>
+
+                                                    <!-- Level 3: Shifts inside the Day -->
+                                                    <div x-show="activeDay === '{{ $dayName }}'" x-collapse style="display: none;">
+                                                        <div class="p-4 sm:p-5 border-t border-gray-100 bg-gray-50/5 divide-y divide-gray-100">
+                                                            @foreach($linksForDay as $link)
+                                                                @include('public.partials.shift-row', ['link' => $link])
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @empty
+                                                <p class="text-xs text-gray-400 font-semibold italic p-4 text-center">No hay turnos programados en esta sección.</p>
+                                            @endforelse
+                                        </div>
+                                    @endif
 
                                 </div>
                             </div>
+
 
                         </div>
                     @endforeach

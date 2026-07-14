@@ -57,13 +57,23 @@
                 </x-select>
             </div>
 
-            <x-input 
-                label="Título del Enlace" 
-                name="title" 
-                value="{{ $link->title }}"
-                placeholder="Ej. Grupo de Coordinación de Voluntarios" 
-                required="true"
-            />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <x-input 
+                    label="Título del Enlace (Ej. Horario / Turno)" 
+                    name="title" 
+                    value="{{ $link->title }}"
+                    placeholder="Ej. Turno Mañana (6:00 - 12:00)" 
+                    required="true"
+                />
+
+                <x-input 
+                    label="Zona o Subgrupo (Opcional)" 
+                    name="zone" 
+                    value="{{ $link->zone }}"
+                    placeholder="Ej. Zona 1" 
+                    help="Opcional. Permite subdividir la asignación (ej: Zona 1, Zona 2)."
+                />
+            </div>
 
             <x-input 
                 label="Slug (URL Amigable)" 
