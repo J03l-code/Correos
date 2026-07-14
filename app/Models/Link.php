@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Hash;
     'style_variant', 'background_color', 'text_color', 'sort_order',
     'is_featured', 'is_active', 'open_new_tab', 'require_confirmation',
     'confirmation_title', 'confirmation_message', 'access_code_hash',
-    'max_clicks', 'starts_at', 'ends_at', 'status_label', 'alternative_url'
+    'max_clicks', 'starts_at', 'ends_at', 'status_label', 'alternative_url',
+    'contact_name', 'contact_phone'
 ])]
 class Link extends Model
 {

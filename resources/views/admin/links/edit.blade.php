@@ -88,13 +88,32 @@
 
             <!-- Destination URL -->
             <x-input 
-                label="URL de Destino Real" 
+                label="URL de Destino Real (Grupo de WhatsApp)" 
                 name="destination_url" 
                 value="{{ $link->destination_url }}"
                 placeholder="Ej. https://chat.whatsapp.com/..." 
                 required="true"
                 help="Enlace real al que se enviará al usuario. Protocolos permitidos: https, mailto, tel."
             />
+
+            <!-- Contact Fields -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <x-input 
+                    label="Persona Encargada (Responsable del Turno)" 
+                    name="contact_name" 
+                    value="{{ $link->contact_name }}"
+                    placeholder="Ej. Hno. Juan Pérez" 
+                    help="Opcional. Nombre del responsable de este turno."
+                />
+
+                <x-input 
+                    label="Contacto del Encargado (Teléfono o Enlace)" 
+                    name="contact_phone" 
+                    value="{{ $link->contact_phone }}"
+                    placeholder="Ej. +593 99 999 9999 o enlace" 
+                    help="Opcional. Número de WhatsApp o teléfono de contacto."
+                />
+            </div>
 
             <!-- SECURITY / PROTECTION AND LIMITS -->
             <div class="border-t border-gray-100 pt-6">

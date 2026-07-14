@@ -57,7 +57,9 @@ class LinkController extends Controller
             'max_clicks' => 'nullable|integer|min:0',
             'access_code' => 'nullable|string|min:4',
             'status_label' => 'nullable|string|max:100',
-            'alternative_url' => 'nullable|url',
+            'alternative_url' => 'nullable|string',
+            'contact_name' => 'nullable|string|max:150',
+            'contact_phone' => 'nullable|string|max:100',
             'open_new_tab' => 'boolean',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
@@ -91,6 +93,8 @@ class LinkController extends Controller
             'max_clicks' => $request->max_clicks,
             'status_label' => $request->status_label,
             'alternative_url' => $request->alternative_url,
+            'contact_name' => $request->contact_name,
+            'contact_phone' => $request->contact_phone,
             'open_new_tab' => $request->has('open_new_tab'),
             'is_featured' => $request->has('is_featured'),
             'is_active' => $request->has('is_active'),
@@ -134,7 +138,9 @@ class LinkController extends Controller
             'max_clicks' => 'nullable|integer|min:0',
             'access_code' => 'nullable|string',
             'status_label' => 'nullable|string|max:100',
-            'alternative_url' => 'nullable|url',
+            'alternative_url' => 'nullable|string',
+            'contact_name' => 'nullable|string|max:150',
+            'contact_phone' => 'nullable|string|max:100',
             'open_new_tab' => 'boolean',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
@@ -158,6 +164,8 @@ class LinkController extends Controller
         $link->max_clicks = $request->max_clicks;
         $link->status_label = $request->status_label;
         $link->alternative_url = $request->alternative_url;
+        $link->contact_name = $request->contact_name;
+        $link->contact_phone = $request->contact_phone;
         $link->open_new_tab = $request->has('open_new_tab');
         $link->is_featured = $request->has('is_featured');
         $link->is_active = $request->has('is_active');
