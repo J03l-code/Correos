@@ -28,9 +28,8 @@
         <meta property="twitter:image" content="{{ $settings['social_image'] }}">
     @endif
 
-    @if($settings['favicon'])
-        <link rel="shortcut icon" href="{{ $settings['favicon'] }}" type="image/x-icon">
-    @endif
+    <link rel="icon" type="image/png" href="/logo.png">
+    <link rel="shortcut icon" href="/logo.png" type="image/png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -87,12 +86,7 @@
             <div class="flex items-center justify-between">
                 <!-- Logo -->
                 <a href="{{ route('public.index') }}" class="flex items-center space-x-3 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] rounded-lg">
-                    @if($settings['logo'])
-                        <img src="{{ $settings['logo'] }}" alt="Logo Oficial QUITO 2026" class="h-12 w-auto object-contain transition-all duration-200">
-                    @else
-                        <!-- Text fallback with logo styles -->
-                        <span class="text-2xl font-black tracking-wider text-[var(--primary)] font-montserrat">QUITO <span class="text-[var(--coral)]">2026</span></span>
-                    @endif
+                    <img src="/logo.png" alt="Logo Oficial QUITO 2026" class="h-10 w-auto object-contain transition-all duration-200">
                 </a>
 
                 <!-- Desktop Navigation -->

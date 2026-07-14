@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') - Administración QUITO 2026</title>
+    <link rel="icon" type="image/png" href="/logo.png">
+    <link rel="shortcut icon" href="/logo.png" type="image/png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,11 +50,7 @@
             <!-- Logo area -->
             <div class="h-16 px-6 border-b border-white/5 flex items-center justify-between">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-2">
-                    @if($settings['logo'])
-                        <img src="{{ $settings['logo'] }}" alt="Logo" class="h-9 w-auto object-contain brightness-0 invert">
-                    @else
-                        <span class="text-lg font-black tracking-wider text-white">QUITO <span class="text-[var(--coral)]">2026</span></span>
-                    @endif
+                    <img src="/logo.png" alt="Logo" class="h-9 w-auto object-contain brightness-0 invert">
                 </a>
                 <button @click="sidebarOpen = false" class="md:hidden p-1 rounded-lg text-gray-400 hover:text-white">
                     <i data-lucide="x" class="h-6 w-6"></i>
